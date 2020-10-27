@@ -1,0 +1,6 @@
+version: v1
+type: flow
+steps:
+  - type: task
+    name: longRunning
+    resourceArn: acs:fc:::services/post-actions-service/functions/long-running

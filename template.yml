@@ -1,0 +1,31 @@
+ROSTemplateFormatVersion: '2015-09-01'
+Transform: 'Aliyun::Serverless-2018-04-03'
+Resources:
+  post-actions-service:
+    Type: 'Aliyun::Serverless::Service'
+    Properties:
+      Description: 'helloworld'
+    long-running:
+      Type: 'Aliyun::Serverless::Function'
+      Properties:
+        Handler: index.handler
+        Timeout: 300
+        Runtime: python3
+        CodeUri: './functions/long-running/'
+  post-actions-subflow:
+    Type: 'Aliyun::Serverless::Flow'
+    DependsOn:
+      - post-actions-service
+    Properties:
+      Description: 'Orchestrate the actual business logic'
+      Policies:
+        - AliyunFnFFullAccess
+        - AliyunFCInvocationAccess
+      DefinitionUri: ./flows/child.flow.yml
+  post-actions-flow:
+    Type: 'Aliyun::Serverless::Flow'
+    Properties:
+      Description: 'Do some post actions after sub-flow is stopped'
+      Policies:
+        - AliyunFnFFullAccess
+      DefinitionUri: ./flows/main.flow.yml
